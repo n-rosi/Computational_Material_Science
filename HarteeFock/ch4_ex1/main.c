@@ -16,12 +16,12 @@ void main(void){
     const VectorType alpha_values = {0.298073, 1.242567, 5.782948, 38.474970};
     const VectorType *alpha = &alpha_values;
 
-    VectorType c_values = {1., 1., 1., 1.};
+    VectorType c_values = {0.25, 0.25, 0.25, 0.25};
     VectorType *c = &c_values;
     VectorType *new_c = calloc(sizeof(c_values),0.);
 
     double groundStateEnergy = 1000.0;
-    double new_groundStateEnergy = 1000.0;
+    double new_groundStateEnergy = 0.0;
     double *Eg = &groundStateEnergy;
     double *new_Eg = &new_groundStateEnergy;
     double delta = 1e-6;
@@ -40,13 +40,13 @@ void main(void){
     h_pq(alpha,h,T,A);
 
     /*  */
-    while(fabs(Eg-new_Eg)>delta){
+    while(fabs(*Eg - *new_Eg)>delta){
 
-        groundStateEnergy = new_groundStateEnergy;
+        *Eg = *new_Eg;
         F_pq(c,Q,h,F); 
         GeneralizedEigenvalueProblem(c,S,F,new_c,new_Eg);
         copyVector(c, new_c, sizeof(VectorType) / sizeof(double));
-        printf("%f\n",new_Eg);
+        printf("%f\n", *new_Eg);
 
     }
 }

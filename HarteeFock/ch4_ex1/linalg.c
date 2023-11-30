@@ -70,8 +70,7 @@ void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F,
     gsl_eigen_genv_sort(alpha, beta, evec, GSL_EIGEN_SORT_ABS_DESC);
 
     /* Modify coefficient vector (new_c) and Ground State Energy (Eg) */
-    (*Eg) = gsl_vector_get(beta, 0);
-    printf("%f\n",Eg);
+    *Eg = gsl_vector_get(beta, 0);
     evec_g = gsl_matrix_complex_column(evec, 0);
     complexToReal(&evec_g.vector, *new_c);
 }

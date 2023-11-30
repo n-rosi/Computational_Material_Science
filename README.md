@@ -2,3 +2,4 @@
 
 Requirments: 
 - GNU Scientific Library, [GSL](https://www.gnu.org/software/gsl/doc/html/)
+    Local installation without sudo priviledges: [look here!](https://coral.ise.lehigh.edu/jild13/2016/07/11/hello/)

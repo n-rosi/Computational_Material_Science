@@ -39,8 +39,7 @@ void complexToReal(gsl_vector_complex *complexVec, double *realVec) {
     }
 }
 
-void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F,
-                                                VectorType *new_c, double *Eg){
+void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, VectorType *new_c, double *E){
 
     /* Get problem dimensions */
     sizeVectorType size_v;
@@ -69,8 +68,18 @@ void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F,
     /* Sort eigenvalues and eigenvectors to find ground state */
     gsl_eigen_genv_sort(alpha, beta, evec, GSL_EIGEN_SORT_ABS_DESC);
 
+    // for (int i = 0; i < 4; i++)
+    // {
+    //     double eval_i = gsl_vector_get(beta, i);
+    //     gsl_vector_complex_view evec_i = gsl_matrix_complex_column (evec, i);
+
+    //     printf ("eigenvalue = %g\n", eval_i);
+    //     printf ("eigenvector = \n");
+    //     gsl_vector_complex_fprintf (stdout, &evec_i.vector, "%g");
+    // }
+
     /* Modify coefficient vector (new_c) and Ground State Energy (Eg) */
-    *Eg = gsl_vector_get(beta, 0);
+    *E = gsl_vector_get(beta, 0);
     evec_g = gsl_matrix_complex_column(evec, 0);
     complexToReal(&evec_g.vector, *new_c);
 }

@@ -17,7 +17,8 @@ void S_pq(const VectorType *alpha, MatrixType *S);
 void T_pq(const VectorType *alpha, MatrixType *T);
 void A_pq(const VectorType *alpha, MatrixType *A);
 void h_pq(const VectorType *alpha, MatrixType *h, MatrixType *T, MatrixType *A);
-
 void F_pq(VectorType *c, TensorType *Q, MatrixType *h, MatrixType *F);
+void GroundStateEnergy(VectorType *c, TensorType *Q, MatrixType *h, double *E);
+void Cnormalization(VectorType *c, MatrixType *S);
 
 #endif // SOURCE_H

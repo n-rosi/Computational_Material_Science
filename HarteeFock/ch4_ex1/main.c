@@ -23,9 +23,9 @@ void main(void){
     (*alpha)[3] = 38.474970;
 
     (*c)[0] = 0.23;
-    (*c)[1] = 0.4; 
-    (*c)[2] = 1.;
-    (*c)[3] = 3.2;
+    (*c)[1] = 0.25; 
+    (*c)[2] = 0.25;
+    (*c)[3] = 0.25;
 
     double groundStateEnergy_value = 0.0;
     double Eg_value = 1000.0;
@@ -56,12 +56,7 @@ void main(void){
         GeneralizedEigenvalueProblem(c,S,F,new_c,new_Eg);
         groundStateEnergy_value = GroundStateEnergy(new_c, Q, h);
         printf("GS ENERGY: %f\n", groundStateEnergy_value);
-        //normalization(new_c,S);
+        normalization(new_c,S);
         copyVector(c, new_c, sizeof(VectorType) / sizeof(double));
-        for(int i=0; i<4; i++){
-            printf("%f ",*c[i]);
-        }
     }
-
-    
 }

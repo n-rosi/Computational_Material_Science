@@ -13,5 +13,6 @@ double* MatrixVectorProduct(VectorType *v, MatrixType *M);
 void FillGSLMatrix(gsl_matrix *M_gsl, MatrixType *M);
 void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, VectorType *new_c, double *E);
 void copyVector(VectorType *destination, const VectorType *source, size_t size);
+void fillC(gsl_vector *fillingVector, double *newVec);
 
 #endif // LINALG_H

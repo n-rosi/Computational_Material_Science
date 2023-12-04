@@ -39,8 +39,6 @@ double GroundStateEnergy(VectorType *c, TensorType *Q, MatrixType *h){
             }
         }
     }
-    printf("%f\n",term1);
-    printf("%f\n",term2);
     return 2*term1+term2;
 }
 
@@ -125,7 +123,6 @@ void Q_prqs(const VectorType *alpha, TensorType *Q){
             for(int q=0; q<4; q++){
                 for(int s=0; s<4; s++){
                     (*Q)[p][r][q][s] = (2 * pow(PI, 2.5)) / ( ( (*alpha)[p]+(*alpha)[q] ) * ( (*alpha)[r]+(*alpha)[s] ) * pow(((*alpha)[p]+(*alpha)[q]+(*alpha)[r]+(*alpha)[s]), 0.5) );
-                    // printf("%f ", (*Q)[p][r][q][s]);
                 }
             }
         }

@@ -39,6 +39,13 @@ void complexToReal(gsl_vector_complex *complexVec, double *realVec) {
     }
 }
 
+void fillC(gsl_vector *fillingVector, double *newVec){
+    size_t size = fillingVector->size;
+    for (size_t i = 0; i < size; ++i) {
+        newVec[i] = gsl_vector_get(fillingVector, i);
+    }
+}
+
 void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, VectorType *new_c, double *E){
 
     /* Get problem dimensions */
@@ -49,10 +56,9 @@ void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, V
     DiscoverMatrixSize(S, &size_M);
 
     /* Define gsl matrices and vectors */
-    gsl_vector_complex_view evec_g;
-    gsl_vector_complex *alpha = gsl_vector_complex_alloc(size_v);
-    gsl_vector *beta = gsl_vector_alloc(size_v);
-    gsl_matrix_complex *evec = gsl_matrix_complex_alloc(size_M[0], size_M[1]);
+    gsl_vector_view evec_g;
+    gsl_vector *eval = gsl_vector_alloc(size_v);
+    gsl_matrix *evec = gsl_matrix_alloc(size_M[0], size_M[1]);
 
     gsl_matrix *S_gsl = gsl_matrix_alloc(size_M[0], size_M[1]);
     gsl_matrix *F_gsl = gsl_matrix_alloc(size_M[0], size_M[1]);
@@ -62,18 +68,17 @@ void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, V
     FillGSLMatrix(F_gsl,F);
 
     /* Create a workspace for the generalized eigenvalue problem  and solve it */
-    gsl_eigen_genv_workspace  *workspace = gsl_eigen_genv_alloc(size_v);
-    gsl_eigen_genv(F_gsl, S_gsl, alpha, beta, evec, workspace);
+    gsl_eigen_gensymmv_workspace *workspace = gsl_eigen_gensymmv_alloc(size_v);
+    gsl_eigen_gensymmv(F_gsl, S_gsl, eval, evec, workspace);
 
     /* Sort eigenvalues and eigenvectors to find ground state */
-    gsl_eigen_genv_sort(alpha, beta, evec, GSL_EIGEN_SORT_ABS_DESC);
+    gsl_eigen_symmv_sort(eval, evec, GSL_EIGEN_SORT_VAL_ASC);
 
     /* Modify coefficient vector (new_c) and Ground State Energy (Eg) */
-    *E = gsl_vector_get(beta, 0);
-    evec_g = gsl_matrix_complex_column(evec, 0);
-    complexToReal(&evec_g.vector, *new_c);
+    *E = gsl_vector_get(eval,0);
+    evec_g = gsl_matrix_column(evec,0);
+    fillC(&evec_g.vector, *new_c);
 }
-
 
 void DiscoverVectorSize(VectorType *v, sizeVectorType *sizeV){
     *sizeV = (sizeVectorType) (sizeof(*v)/sizeof((*v)[0]));

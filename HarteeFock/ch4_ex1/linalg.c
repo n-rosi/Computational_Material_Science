@@ -68,16 +68,6 @@ void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, V
     /* Sort eigenvalues and eigenvectors to find ground state */
     gsl_eigen_genv_sort(alpha, beta, evec, GSL_EIGEN_SORT_ABS_DESC);
 
-    // for (int i = 0; i < 4; i++)
-    // {
-    //     double eval_i = gsl_vector_get(beta, i);
-    //     gsl_vector_complex_view evec_i = gsl_matrix_complex_column (evec, i);
-
-    //     printf ("eigenvalue = %g\n", eval_i);
-    //     printf ("eigenvector = \n");
-    //     gsl_vector_complex_fprintf (stdout, &evec_i.vector, "%g");
-    // }
-
     /* Modify coefficient vector (new_c) and Ground State Energy (Eg) */
     *E = gsl_vector_get(beta, 0);
     evec_g = gsl_matrix_complex_column(evec, 0);
@@ -94,23 +84,61 @@ void DiscoverMatrixSize(MatrixType *M, sizeMatrixType *sizeM){
     (*sizeM)[1] = (sizeVectorType) (sizeof((*M)[0]) / sizeof((*M)[0][0]));
 }
 
-double* MatrixVectorProduct(VectorType *v, MatrixType *M){
 
-    sizeVectorType size_v;
-    sizeMatrixType size_M;
 
-    double *b = calloc(size_M[0], sizeof(double));
 
-    DiscoverVectorSize(v, &size_v);
-    DiscoverMatrixSize(M, &size_M);
 
-    for (int i=0; i<size_M[0]; i++){
-        for(int j=0; j<size_M[1]; j++){
-            b[i] += (*M)[i][j] * (*v)[j];
-        }
-    }
 
-    return b;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// double* MatrixVectorProduct(VectorType *v, MatrixType *M){
+
+//     sizeVectorType size_v;
+//     sizeMatrixType size_M;
+
+//     double *b = calloc(size_M[0], sizeof(double));
+
+//     DiscoverVectorSize(v, &size_v);
+//     DiscoverMatrixSize(M, &size_M);
+
+//     for (int i=0; i<size_M[0]; i++){
+//         for(int j=0; j<size_M[1]; j++){
+//             b[i] += (*M)[i][j] * (*v)[j];
+//         }
+//     }
+
+//     return b;
+// }
 
 

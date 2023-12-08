@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <complex.h>
 
 #include "gsl/gsl_eigen.h"
 #include "gsl/gsl_vector_complex_double.h"
@@ -30,6 +31,19 @@ void FillGSLMatrix(gsl_matrix *M_gsl, MatrixType *M){
 
 }
 
+void FillGSLMatrixComplex (gsl_matrix_complex *M_gsl, MatrixType *M){
+
+    gsl_complex complexValue;
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            complexValue = (*M)[i][j] + 0*I;
+            gsl_matrix_complex_set(M_gsl, i, j, complexValue); 
+        }
+    }
+
+}
+
 void complexToReal(gsl_vector_complex *complexVec, double *realVec) {
     size_t size = complexVec->size;
 
@@ -46,7 +60,7 @@ void fillC(gsl_vector *fillingVector, double *newVec){
     }
 }
 
-void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, VectorType *new_c, double *E){
+void RealSymmetricDefinite_GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, VectorType *new_c, double *E){
 
     /* Get problem dimensions */
     sizeVectorType size_v;
@@ -78,6 +92,40 @@ void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, V
     *E = gsl_vector_get(eval,0);
     evec_g = gsl_matrix_column(evec,0);
     fillC(&evec_g.vector, *new_c);
+}
+
+void ComplexHermitianDefinite_GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, VectorType *new_c, double *E){
+
+    /* Get problem dimensions */
+    sizeVectorType size_v;
+    sizeMatrixType size_M;
+
+    DiscoverVectorSize(c, &size_v);
+    DiscoverMatrixSize(S, &size_M);
+
+    /* Define gsl matrices and vectors */
+    gsl_vector_complex_view evec_g;
+    gsl_vector *eval = gsl_vector_alloc(size_v);
+    gsl_matrix_complex *evec = gsl_matrix_complex_alloc(size_M[0], size_M[1]);
+
+    gsl_matrix_complex *S_gsl = gsl_matrix_complex_alloc(size_M[0], size_M[1]);
+    gsl_matrix_complex *F_gsl = gsl_matrix_complex_alloc(size_M[0], size_M[1]);
+
+    /* Turn Schrodinger operators into gsl matrices */
+    FillGSLMatrixComplex(S_gsl,S);
+    FillGSLMatrixComplex(F_gsl,F);
+
+    /* Create a workspace for the generalized eigenvalue problem  and solve it */
+    gsl_eigen_genhermv_workspace *workspace = gsl_eigen_genhermv_alloc(size_v);
+    gsl_eigen_genhermv(F_gsl, S_gsl, eval, evec, workspace);
+
+    /* Sort eigenvalues and eigenvectors to find ground state */
+    gsl_eigen_genhermv_sort(eval, evec, GSL_EIGEN_SORT_ABS_ASC);
+
+    /* Modify coefficient vector (new_c) and Ground State Energy (Eg) */
+    *E = gsl_vector_get(eval,0);
+    evec_g = gsl_matrix_complex_column(evec,0);
+    complexToReal(&evec_g.vector, *new_c);
 }
 
 void DiscoverVectorSize(VectorType *v, sizeVectorType *sizeV){

@@ -1,5 +1,11 @@
 #include <stdint.h>
 
+#include "gsl/gsl_eigen.h"
+#include "gsl/gsl_vector_complex_double.h"
+#include "gsl/gsl_vector_double.h"
+#include "gsl/gsl_complex.h"
+#include "gsl/gsl_complex_math.h"
+
 #ifndef LINALG_H
 #define LINALG_H
 
@@ -11,7 +17,9 @@ void DiscoverVectorSize(VectorType *v, sizeVectorType *sizeV);
 void DiscoverMatrixSize(MatrixType *M, sizeMatrixType *sizeM);
 double* MatrixVectorProduct(VectorType *v, MatrixType *M);
 void FillGSLMatrix(gsl_matrix *M_gsl, MatrixType *M);
-void GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, VectorType *new_c, double *E);
+void FillGSLMatrixComplex (gsl_matrix_complex *M_gsl, MatrixType *M);
+void ComplexHermitianDefinite_GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, VectorType *new_c, double *E);
+void RealSymmetricDefinite_GeneralizedEigenvalueProblem(VectorType *c, MatrixType *S, MatrixType *F, VectorType *new_c, double *E); 
 void copyVector(VectorType *destination, const VectorType *source, size_t size);
 void fillC(gsl_vector *fillingVector, double *newVec);
 

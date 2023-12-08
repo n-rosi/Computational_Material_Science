@@ -22,7 +22,7 @@ void main(void){
     (*alpha)[2] = 5.782948;
     (*alpha)[3] = 38.474970;
 
-    (*c)[0] = 0.23;
+    (*c)[0] = 0.25;
     (*c)[1] = 0.25; 
     (*c)[2] = 0.25;
     (*c)[3] = 0.25;
@@ -33,7 +33,7 @@ void main(void){
     double *groundStateEnergy = &groundStateEnergy_value;
     double *Eg = &Eg_value;
     double *new_Eg = &new_Eg_value;
-    double delta = 1e-10;
+    double delta = 1e-6;
 
     /* Declare hamiltonian quantities */
     TensorType *Q = malloc(sizeof(TensorType));
@@ -48,15 +48,39 @@ void main(void){
     S_pq(alpha,S); 
     h_pq(alpha,h,T,A);
     normalization(c,S);
+    F_pq(c,Q,h,F);
+    // for(int i=0; i<4; i++){
+    //     for(int j=0; j<4; j++){
+    //         printf("%f ", (*F)[i][j] );
+    //     }
+    // }
 
-    /*  */  
     while(fabs(*Eg - *new_Eg)>delta){
+
         *Eg = *new_Eg;
         F_pq(c,Q,h,F); 
-        GeneralizedEigenvalueProblem(c,S,F,new_c,new_Eg);
-        groundStateEnergy_value = GroundStateEnergy(new_c, Q, h);
-        printf("GS ENERGY: %f\n", groundStateEnergy_value);
+        // printf("\n\n");
+        // printf("F:\n");
+        // for(int i=0; i<4; i++){
+        //     for(int j=0; j<4; j++){
+        //         printf("%f ", (*F)[i][j] );
+        //     }
+        // }
+        // printf("\nc:\n");
+        // for(int i=0; i<4; i++){
+        //     printf("%f ", (*c)[i] );
+        // }
+        // printf("\n\n");
+        ComplexHermitianDefinite_GeneralizedEigenvalueProblem(c,S,F,new_c,new_Eg);
+        printf("\n\n");
+        for(int i=0; i<4; i++){
+            printf("%f ", (*new_c)[i]);
+        }
+        printf("\n\n");
         normalization(new_c,S);
         copyVector(c, new_c, sizeof(VectorType) / sizeof(double));
     }
+
+    //groundStateEnergy_value = GroundStateEnergy(new_c, Q, h);
+    //printf("GS ENERGY: %f\n", groundStateEnergy_value);
 }

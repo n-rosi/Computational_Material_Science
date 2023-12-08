@@ -52,6 +52,7 @@ void F_pq(VectorType *c, TensorType *Q, MatrixType *h, MatrixType *F){
             (*suppVar)[p][q] = 0.;
         }
     }
+
     for(int p=0; p<4; p++){
         for(int r=0; r<4; r++){
             for(int q=0; q<4; q++){
